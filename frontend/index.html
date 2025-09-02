@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Test Case Generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Test Case Generator</h1>
+            <p>AI for Intelligent Test Case Generation</p>
+            <div class="connection-status">
+                <div id="connectionIndicator" class="connection-indicator">
+                    <span class="status-dot"></span>
+                    <span id="connectionText">Checking connection...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2>
+                    <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                    </svg>
+                    Test Requirements Input
+                </h2>
+                
+                <div class="input-container">
+                    <textarea 
+                        id="promptInput" 
+                        class="prompt-input" 
+                        placeholder="Enter your test requirements here... For example: 'User login functionality with email and password validation'"
+                        rows="5"
+                    ></textarea>
+                    <div class="input-footer">
+                        <span class="char-count">
+                            <span id="charCount">0</span> characters
+                        </span>
+                        <span class="shortcut-hint">Ctrl+Enter to generate</span>
+                    </div>
+                </div>
+
+                <div class="examples">
+                    <h3> Example Prompts for Demo:</h3>
+                    <div class="example-buttons">
+                        <button class="example-btn" data-example="Login functionality with email and password validation including forgot password feature">
+                            <span class="example-icon">🔐</span>
+                            <div class="example-content">
+                                <strong>Login & Authentication System</strong>
+                                <small>Email/password validation, forgot password, security</small>
+                            </div>
+                        </button>
+                        <button class="example-btn" data-example="E-commerce shopping cart with add, remove, update quantity, and checkout features">
+                            <span class="example-icon">🛒</span>
+                            <div class="example-content">
+                                <strong>E-commerce Shopping Cart</strong>
+                                <small>Add/remove items, quantity updates, checkout process</small>
+                            </div>
+                        </button>
+                        <button class="example-btn" data-example="File upload functionality supporting multiple formats with size validation and virus scanning">
+                            <span class="example-icon">📁</span>
+                            <div class="example-content">
+                                <strong>File Upload System</strong>
+                                <small>Multiple formats, size validation, security scanning</small>
+                            </div>
+                        </button>
+                        <button class="example-btn" data-example="REST API for user management with CRUD operations, authentication, and role-based access control">
+                            <span class="example-icon">🔗</span>
+                            <div class="example-content">
+                                <strong>REST API Testing</strong>
+                                <small>CRUD operations, authentication, role-based access</small>
+                            </div>
+                        </button>
+                        <button class="example-btn" data-example="Mobile app search functionality with filters, sorting, and auto-complete suggestions">
+                            <span class="example-icon">📱</span>
+                            <div class="example-content">
+                                <strong>Mobile App Search</strong>
+                                <small>Filters, sorting, auto-complete, mobile UX</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="generate-btn">
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-text">Generate Test Cases</span>
+                </button>
+
+                <div class="generation-info">
+                    <p><strong>AI Model:</strong> Meta Llama 4 Scout (via Groq)</p>
+                    <p><strong>Focus:</strong> Comprehensive test coverage including positive, negative, edge, and boundary cases</p>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <h2>
+                    <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" clip-rule="evenodd"/>
+                    </svg>
+                    Generated Test Cases
+                    <div class="output-actions">
+                        <button id="copyBtn" class="copy-btn" style="display: none;">
+                            Copy All
+                        </button>
+                        <button id="downloadBtn" class="download-btn" style="display: none;">
+                            Download
+                        </button>
+                    </div>
+                </h2>
+
+                <div class="output-content">
+                    <div id="placeholder" class="placeholder">
+                        <div class="placeholder-icon">🎯</div>
+                        <h3>Your AI-generated test cases will appear here</h3>
+                        <p>Enter a requirement and click "Generate Test Cases" to begin</p>
+                        <div class="placeholder-features">
+                            <div class="feature">✅ Comprehensive test coverage</div>
+                            <div class="feature">✅ Professional formatting</div>
+                            <div class="feature">✅ Ready for implementation</div>
+                        </div>
+                    </div>
+
+                    <div id="loading" class="loading">
+                        <div class="loading-animation">
+                            <div class="spinner"></div>
+                            <div class="pulse-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                        <h3>🧠 AI is analyzing your requirements...</h3>
+                        <p>Generating comprehensive test cases with positive, negative, edge, and boundary scenarios</p>
+                        <div class="progress-steps">
+                            <div class="step active">📝 Analyzing requirements</div>
+                            <div class="step">🔍 Identifying test scenarios</div>
+                            <div class="step">⚡ Generating test cases</div>
+                            <div class="step">✨ Formatting output</div>
+                        </div>
+                    </div>
+
+                    <div id="testCases" class="test-cases">
+                        <div class="test-cases-header">
+                            <div class="generation-stats">
+                                <span id="generationTime"></span>
+                                <span id="testCaseCount"></span>
+                            </div>
+                        </div>
+                        <div class="test-cases-content">
+                            <pre id="testCasesContent"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="statusBar" class="status-bar">
+            <div class="status-content">
+                <span id="statusText">Ready to generate test cases</span>
+                <div class="status-actions">
+                    <button id="clearBtn" class="action-btn" onclick="clearOutput()" style="display: none;">
+                        🗑️ Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

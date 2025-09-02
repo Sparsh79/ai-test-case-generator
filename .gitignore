@@ -1,0 +1,68 @@
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.log
+
+# IDE files
+.idea/
+*.iws
+*.ipr
+.vscode/
+*.project
+*.classpath
+.settings/
+
+# Build output
+/target/
+/out/
+/build/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+### Spring Boot Specific ###
+# Application logs
+*.log
+logs/
+*.pid
+*.seed
+*.out
+
+### Frontend ###
+node_modules/
+dist/
+build/
+*.cache
+*.map
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+### Misc ###
+*.swp
+*.swo
+*.bak
+*.tmp
