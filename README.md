@@ -1,7 +1,7 @@
 # 🤖 AI Test Case Generator - Complete Demo Application
 
 > **Professional AI-powered test case generation using Meta Llama 4 Scout model via Groq API**  
-> *Built for "Harnessing AI and Advanced Techniques for Intelligent Test Case Generation" webinar*
+> *Built for "Harnessing AI and Advanced Techniques for Intelligent Test Case Generation"*
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
