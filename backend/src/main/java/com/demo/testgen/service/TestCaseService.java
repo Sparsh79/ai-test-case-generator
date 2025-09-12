@@ -19,7 +19,7 @@ public class TestCaseService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("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")
+    @Value("")
     private String groqApiKey;
 
     @Value("${groq.api.url:https://api.groq.com/openai/v1/chat/completions}")
