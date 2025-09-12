@@ -19,7 +19,7 @@ public class TestCaseService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${groq.api.key:your-groq-api-key}")
+    @Value("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")
     private String groqApiKey;
 
     @Value("${groq.api.url:https://api.groq.com/openai/v1/chat/completions}")
@@ -44,7 +44,7 @@ public class TestCaseService {
             // System message to define the AI's role
             Map<String, String> systemMessage = new HashMap<>();
             systemMessage.put("role", "system");
-            systemMessage.put("content", "You are an expert software test engineer with over 10 years of experience. Generate comprehensive, well-structured test cases based on the given requirements or user stories. Include positive test cases, negative test cases, edge cases, and boundary value testing scenarios. Format the output in a clear, professional structure with Test Case ID, Description, Preconditions, Test Steps, Expected Results, and Priority level. Make sure to cover all possible scenarios including security, performance, and usability aspects where relevant.");
+            systemMessage.put("content", "You are an expert software test engineer with over 10 years of experience. Generate comprehensive, well-structured test cases based on the given requirements or user stories. Include positive test cases, negative test cases, edge cases, and boundary value testing scenarios.\n\nFormat EACH test case as a separate, clearly defined block using the following structure:\n\n=== TEST CASE [ID] ===\nTitle: [Brief descriptive title]\nDescription: [Detailed description]\nPreconditions: [Required setup/conditions]\nTest Steps:\n1. [Step 1]\n2. [Step 2]\n3. [Step 3]\nExpected Results: [What should happen]\nPriority: [High/Medium/Low]\nCategory: [Functional/Security/Performance/UI/etc.]\n\n=== END TEST CASE ===\n\nMake sure each test case is clearly separated and covers different scenarios including security, performance, and usability aspects where relevant.");
 
             // User message with the actual prompt
             Map<String, String> userMessage = new HashMap<>();

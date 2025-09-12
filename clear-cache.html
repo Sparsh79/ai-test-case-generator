@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Cache - AI Test Case Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            margin: 20px 0;
+        }
+        button {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        button:hover { transform: translateY(-2px); }
+        .steps { text-align: left; margin: 20px 0; }
+        .steps li { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔄 Clear Browser Cache</h1>
+        <p>If you're experiencing JavaScript errors, your browser might be using a cached version of the files.</p>
+        
+        <div class="steps">
+            <h3>Manual Steps:</h3>
+            <ol>
+                <li><strong>Hard Refresh:</strong> Press <code>Ctrl + F5</code> (or <code>Cmd + Shift + R</code> on Mac)</li>
+                <li><strong>Clear Browser Cache:</strong> Press <code>F12</code> → Right-click on refresh button → "Empty Cache and Hard Reload"</li>
+                <li><strong>Disable Cache:</strong> In Developer Tools (F12) → Network tab → Check "Disable cache"</li>
+            </ol>
+        </div>
+        
+        <button onclick="clearCacheAndReload()">🔄 Clear Cache & Reload</button>
+        <button onclick="openApp()">🚀 Open Application</button>
+        
+        <div style="margin-top: 20px; font-size: 14px;">
+            <p>Current timestamp: <span id="timestamp"></span></p>
+            <p>This ensures fresh file loading</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toISOString();
+        
+        function clearCacheAndReload() {
+            // Clear localStorage and sessionStorage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Force reload with cache clearing
+            location.reload(true);
+        }
+        
+        function openApp() {
+            // Open with cache-busting timestamp
+            const timestamp = Date.now();
+            window.open(`./index.html?v=${timestamp}`, '_blank');
+        }
+    </script>
+</body>
+</html>

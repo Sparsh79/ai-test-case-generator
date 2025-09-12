@@ -4,175 +4,372 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Test Case Generator</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css?v=20250911b">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🤖 AI Test Case Generator</h1>
-            <p>AI for Intelligent Test Case Generation</p>
-            <div class="connection-status">
-                <div id="connectionIndicator" class="connection-indicator">
-                    <span class="status-dot"></span>
-                    <span id="connectionText">Checking connection...</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="main-content">
-            <div class="input-section">
-                <h2>
-                    <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                    </svg>
-                    Test Requirements Input
-                </h2>
-                
-                <div class="input-container">
-                    <textarea 
-                        id="promptInput" 
-                        class="prompt-input" 
-                        placeholder="Enter your test requirements here... For example: 'User login functionality with email and password validation'"
-                        rows="5"
-                    ></textarea>
-                    <div class="input-footer">
-                        <span class="char-count">
-                            <span id="charCount">0</span> characters
-                        </span>
-                        <span class="shortcut-hint">Ctrl+Enter to generate</span>
-                    </div>
-                </div>
-
-                <div class="examples">
-                    <h3> Example Prompts for Demo:</h3>
-                    <div class="example-buttons">
-                        <button class="example-btn" data-example="Login functionality with email and password validation including forgot password feature">
-                            <span class="example-icon">🔐</span>
-                            <div class="example-content">
-                                <strong>Login & Authentication System</strong>
-                                <small>Email/password validation, forgot password, security</small>
-                            </div>
-                        </button>
-                        <button class="example-btn" data-example="E-commerce shopping cart with add, remove, update quantity, and checkout features">
-                            <span class="example-icon">🛒</span>
-                            <div class="example-content">
-                                <strong>E-commerce Shopping Cart</strong>
-                                <small>Add/remove items, quantity updates, checkout process</small>
-                            </div>
-                        </button>
-                        <button class="example-btn" data-example="File upload functionality supporting multiple formats with size validation and virus scanning">
-                            <span class="example-icon">📁</span>
-                            <div class="example-content">
-                                <strong>File Upload System</strong>
-                                <small>Multiple formats, size validation, security scanning</small>
-                            </div>
-                        </button>
-                        <button class="example-btn" data-example="REST API for user management with CRUD operations, authentication, and role-based access control">
-                            <span class="example-icon">🔗</span>
-                            <div class="example-content">
-                                <strong>REST API Testing</strong>
-                                <small>CRUD operations, authentication, role-based access</small>
-                            </div>
-                        </button>
-                        <button class="example-btn" data-example="Mobile app search functionality with filters, sorting, and auto-complete suggestions">
-                            <span class="example-icon">📱</span>
-                            <div class="example-content">
-                                <strong>Mobile App Search</strong>
-                                <small>Filters, sorting, auto-complete, mobile UX</small>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <button id="generateBtn" class="generate-btn">
-                    <span class="btn-icon">⚡</span>
-                    <span class="btn-text">Generate Test Cases</span>
-                </button>
-
-                <div class="generation-info">
-                    <p><strong>AI Model:</strong> Meta Llama 4 Scout (via Groq)</p>
-                    <p><strong>Focus:</strong> Comprehensive test coverage including positive, negative, edge, and boundary cases</p>
-                </div>
-            </div>
-
-            <div class="output-section">
-                <h2>
-                    <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" clip-rule="evenodd"/>
-                    </svg>
-                    Generated Test Cases
-                    <div class="output-actions">
-                        <button id="copyBtn" class="copy-btn" style="display: none;">
-                            Copy All
-                        </button>
-                        <button id="downloadBtn" class="download-btn" style="display: none;">
-                            Download
-                        </button>
-                    </div>
-                </h2>
-
-                <div class="output-content">
-                    <div id="placeholder" class="placeholder">
-                        <div class="placeholder-icon">🎯</div>
-                        <h3>Your AI-generated test cases will appear here</h3>
-                        <p>Enter a requirement and click "Generate Test Cases" to begin</p>
-                        <div class="placeholder-features">
-                            <div class="feature">✅ Comprehensive test coverage</div>
-                            <div class="feature">✅ Professional formatting</div>
-                            <div class="feature">✅ Ready for implementation</div>
-                        </div>
-                    </div>
-
-                    <div id="loading" class="loading">
-                        <div class="loading-animation">
-                            <div class="spinner"></div>
-                            <div class="pulse-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                        </div>
-                        <h3>🧠 AI is analyzing your requirements...</h3>
-                        <p>Generating comprehensive test cases with positive, negative, edge, and boundary scenarios</p>
-                        <div class="progress-steps">
-                            <div class="step active">📝 Analyzing requirements</div>
-                            <div class="step">🔍 Identifying test scenarios</div>
-                            <div class="step">⚡ Generating test cases</div>
-                            <div class="step">✨ Formatting output</div>
-                        </div>
-                    </div>
-
-                    <div id="testCases" class="test-cases">
-                        <div class="test-cases-header">
-                            <div class="generation-stats">
-                                <span id="generationTime"></span>
-                                <span id="testCaseCount"></span>
-                            </div>
-                        </div>
-                        <div class="test-cases-content">
-                            <pre id="testCasesContent"></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="statusBar" class="status-bar">
-            <div class="status-content">
-                <span id="statusText">Ready to generate test cases</span>
-                <div class="status-actions">
-                    <button id="clearBtn" class="action-btn" onclick="clearOutput()" style="display: none;">
-                        🗑️ Clear
-                    </button>
-                </div>
-            </div>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-overlay"></div>
+        <div class="floating-shapes">
+            <div class="shape-1"></div>
+            <div class="shape-2"></div>
+            <div class="shape-3"></div>
+            <div class="shape-4"></div>
+            <div class="shape-5"></div>
+            <div class="shape-6"></div>
         </div>
     </div>
 
-    <!-- Toast notifications -->
+    <!-- Main Application Container -->
+    <div class="app-container">
+        <!-- Modern Header -->
+        <header class="modern-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-container">
+                        <div class="logo-icon">
+                            <div class="logo-pulse"></div>
+                            🤖
+                        </div>
+                        <div>
+                            <h1 class="gradient-text">AI Test Case Generator</h1>
+                            <p class="subtitle">Intelligent test case generation powered by Meta Llama AI</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="connection-section">
+                    <div class="connection-card" id="connectionStatus">
+                        <div class="status-light">
+                            <div class="light-dot"></div>
+                            <div class="light-ring"></div>
+                        </div>
+                        <div class="status-info">
+                            <div class="status-title" id="connectionText">Checking Connection...</div>
+                            <div class="status-subtitle" id="connectionSubtext">Verifying backend status</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-layout">
+                <!-- Input Panel -->
+                <div class="glass-panel input-panel">
+                    <div class="panel-header">
+                        <div class="header-icon-container">
+                            <div class="header-icon input-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <div class="header-info">
+                            <h2>Smart Requirements Input</h2>
+                            <p>Describe your application features and get comprehensive test cases generated by AI</p>
+                        </div>
+                    </div>
+
+                    <!-- Input Section -->
+                    <div class="smart-input-section">
+                        <div class="input-field">
+                            <textarea 
+                                id="promptInput" 
+                                class="modern-textarea" 
+                                placeholder="Describe the functionality you need test cases for...
+
+Examples:
+• User login with email/password validation and lockout features
+• E-commerce shopping cart with discount codes and checkout
+• REST API for user management with CRUD operations
+• File upload system with validation and virus scanning"
+                                maxlength="1000"
+                            ></textarea>
+                            <div class="input-border"></div>
+                        </div>
+                        <div class="input-meta">
+                            <div class="char-info">
+                                <span id="charCount">0</span>/1000 characters
+                            </div>
+                            <div class="shortcut-badge">
+                                <i class="fas fa-keyboard"></i>
+                                <span>Ctrl + Enter to generate</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Examples Container -->
+                    <div class="examples-container">
+                        <div class="examples-header">
+                            <h3><i class="fas fa-lightbulb"></i>Quick Examples</h3>
+                            <p>Click any example below to load it into the input field</p>
+                        </div>
+                        <div class="examples-grid">
+                            <div class="example-card security" tabindex="0" data-example="User authentication system with email/password login, password reset functionality, account lockout after 3 failed attempts, and session management">
+                                <div class="card-hover-effect"></div>
+                                <div class="card-icon">🔐</div>
+                                <div class="card-content">
+                                    <h4>Authentication System</h4>
+                                    <p>Complete user login, password reset, and security features</p>
+                                    <div class="card-tags">
+                                        <span class="tag">Security</span>
+                                        <span class="tag">Login</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="example-card ecommerce" tabindex="0" data-example="E-commerce shopping cart with add/remove items, quantity updates, discount code application, tax calculation, and multi-step checkout process">
+                                <div class="card-hover-effect"></div>
+                                <div class="card-icon">🛒</div>
+                                <div class="card-content">
+                                    <h4>Shopping Cart</h4>
+                                    <p>Full e-commerce cart functionality with checkout process</p>
+                                    <div class="card-tags">
+                                        <span class="tag">E-commerce</span>
+                                        <span class="tag">Payment</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="example-card filemanager" tabindex="0" data-example="File upload system supporting multiple formats, file size validation up to 10MB, virus scanning, metadata extraction, and secure file storage">
+                                <div class="card-hover-effect"></div>
+                                <div class="card-icon">📎</div>
+                                <div class="card-content">
+                                    <h4>File Upload System</h4>
+                                    <p>Secure file handling with validation and processing</p>
+                                    <div class="card-tags">
+                                        <span class="tag">Upload</span>
+                                        <span class="tag">Validation</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="example-card api" tabindex="0" data-example="REST API for user management with CRUD operations, input validation, authentication middleware, rate limiting, and comprehensive error handling">
+                                <div class="card-hover-effect"></div>
+                                <div class="card-icon">🔗</div>
+                                <div class="card-content">
+                                    <h4>REST API</h4>
+                                    <p>Complete API with CRUD operations and validation</p>
+                                    <div class="card-tags">
+                                        <span class="tag">API</span>
+                                        <span class="tag">CRUD</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="example-card mobile" tabindex="0" data-example="Mobile app user registration with email verification, phone number validation, profile picture upload, and onboarding workflow">
+                                <div class="card-hover-effect"></div>
+                                <div class="card-icon">📱</div>
+                                <div class="card-content">
+                                    <h4>Mobile Registration</h4>
+                                    <p>User onboarding with verification and profile setup</p>
+                                    <div class="card-tags">
+                                        <span class="tag">Mobile</span>
+                                        <span class="tag">Registration</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="example-card dashboard" tabindex="0" data-example="Admin dashboard with user analytics, real-time data visualization, role-based access control, data export functionality, and audit logging">
+                                <div class="card-hover-effect"></div>
+                                <div class="card-icon">📊</div>
+                                <div class="card-content">
+                                    <h4>Admin Dashboard</h4>
+                                    <p>Analytics dashboard with access control and reporting</p>
+                                    <div class="card-tags">
+                                        <span class="tag">Dashboard</span>
+                                        <span class="tag">Analytics</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generate Section -->
+                    <div class="generate-section">
+                        <button id="generateBtn" class="generate-button">
+                            <div class="button-bg"></div>
+                            <div class="button-content">
+                                <div class="button-icon">
+                                    <i class="fas fa-magic"></i>
+                                </div>
+                                <div class="button-text">
+                                    <div class="main-text">Generate Test Cases</div>
+                                    <div class="sub-text">Powered by Meta Llama AI</div>
+                                </div>
+                                <div class="button-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </div>
+                        </button>
+
+                        <div class="ai-badge-container">
+                            <div class="ai-badge">
+                                <i class="fas fa-brain"></i>
+                                <span>AI-Powered Analysis</span>
+                            </div>
+                            <p class="ai-description">
+                                Our AI analyzes your requirements and generates comprehensive test cases covering positive, negative, edge cases, and security scenarios.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="glass-panel output-panel">
+                    <div class="panel-header">
+                        <div class="header-icon-container">
+                            <div class="header-icon output-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <div class="header-info">
+                            <h2>Generated Test Cases</h2>
+                            <p>Comprehensive test scenarios generated by AI for your requirements</p>
+                        </div>
+                        <div class="panel-actions">
+                            <button id="copyBtn" class="action-btn copy-btn" style="display: none;">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                            <button id="downloadBtn" class="action-btn download-btn" style="display: none;">
+                                <i class="fas fa-download"></i>
+                                <span>Download</span>
+                            </button>
+                            <button id="clearBtn" class="action-btn clear-btn" style="display: none;">
+                                <i class="fas fa-trash"></i>
+                                <span>Clear</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Output Container -->
+                    <div class="output-container">
+                        <!-- Placeholder State -->
+                        <div class="output-state active" id="placeholderState">
+                            <div class="placeholder-content">
+                                <div class="placeholder-icon">
+                                    <div class="icon-rings">
+                                        <div class="ring"></div>
+                                        <div class="ring ring-2"></div>
+                                    </div>
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <h3>Ready to Generate Test Cases</h3>
+                                <p>Enter your application requirements above and click generate to get comprehensive AI-powered test cases.</p>
+                                <div class="feature-list">
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Comprehensive test coverage</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Edge case identification</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Security scenario testing</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Performance considerations</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div class="output-state" id="loadingState">
+                            <div class="loading-content">
+                                <div class="ai-animation">
+                                    <div class="central-brain">
+                                        <div class="brain-pulse"></div>
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                    <div class="neural-connections">
+                                        <div class="connection c1"></div>
+                                        <div class="connection c2"></div>
+                                        <div class="connection c3"></div>
+                                        <div class="connection c4"></div>
+                                        <div class="connection c5"></div>
+                                        <div class="connection c6"></div>
+                                    </div>
+                                </div>
+                                <h3>AI is Generating Test Cases</h3>
+                                <p>Our advanced AI is analyzing your requirements and creating comprehensive test scenarios...</p>
+                                <div class="progress-steps">
+                                    <div class="step">
+                                        <div class="step-icon"><i class="fas fa-search"></i></div>
+                                        <span>Analyzing requirements</span>
+                                    </div>
+                                    <div class="step">
+                                        <div class="step-icon"><i class="fas fa-lightbulb"></i></div>
+                                        <span>Identifying test scenarios</span>
+                                    </div>
+                                    <div class="step">
+                                        <div class="step-icon"><i class="fas fa-shield-alt"></i></div>
+                                        <span>Adding security tests</span>
+                                    </div>
+                                    <div class="step">
+                                        <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
+                                        <span>Finalizing test cases</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Results State -->
+                        <div class="output-state" id="resultsState">
+                            <div class="results-header">
+                                <div class="stats-container">
+                                    <div class="stat-item">
+                                        <div class="stat-number" id="testCaseCount">-</div>
+                                        <div class="stat-label">Test Cases</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number" id="generationTime">-</div>
+                                        <div class="stat-label">Generation Time</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="results-content">
+                                <pre id="testCasesContent" class="test-cases-text"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Status Footer -->
+        <footer class="status-footer">
+            <div class="status-container">
+                <div class="status-left">
+                    <div class="activity-indicator">
+                        <div class="pulse-ring"></div>
+                    </div>
+                    <span id="statusText">Ready to generate intelligent test cases with AI</span>
+                </div>
+                <div class="status-right">
+                    <div class="tech-badges">
+                        <span class="tech-badge">Spring Boot</span>
+                        <span class="tech-badge">Meta Llama</span>
+                        <span class="tech-badge">Groq AI</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast Container -->
     <div id="toastContainer" class="toast-container"></div>
 
-    <script src="js/app.js"></script>
+    <!-- JavaScript -->
+    <script src="js/app.js?v=20250911b"></script>
 </body>
 </html>

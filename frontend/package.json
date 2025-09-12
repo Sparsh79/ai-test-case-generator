@@ -1,0 +1,42 @@
+{
+  "name": "ai-testcase-generator-frontend",
+  "version": "1.0.0",
+  "description": "AI Test Case Generator Frontend - Modern web interface for generating comprehensive test cases using AI",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 3000 -c-1 --cors -a 127.0.0.1",
+    "dev": "npx http-server . -p 3000 -c-1 --cors -a 127.0.0.1 -o",
+    "build": "echo 'No build process needed for static frontend'",
+    "serve": "npx serve . -p 3000 --cors -l 127.0.0.1",
+    "preview": "npx live-server --port=3000 --host=127.0.0.1 --no-browser --cors"
+  },
+  "keywords": [
+    "ai",
+    "test-case-generator",
+    "frontend",
+    "javascript",
+    "html",
+    "css",
+    "spring-boot"
+  ],
+  "author": "AI Test Case Generator Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "serve": "^14.2.1",
+    "live-server": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

@@ -59,27 +59,37 @@ const Elements = {
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function() {
-    initializeElements();
-    setupEventListeners();
-    checkBackendConnection();
-    initializeUI();
+    console.log('🚀 AI Test Case Generator - Initializing...');
+    
+    try {
+        initializeElements();
+        setupEventListeners();
+        checkBackendConnection();
+        initializeUI();
+        console.log('✅ Initialization complete');
+    } catch (error) {
+        console.error('❌ Initialization failed:', error);
+        showToast('Application initialization failed. Please refresh the page.', 'error');
+    }
 });
 
 function initializeElements() {
+    console.log('🔧 Initializing DOM elements...');
+    
     // Connection elements
-    Elements.connectionIndicator = document.getElementById('connectionIndicator');
+    Elements.connectionIndicator = document.getElementById('connectionStatus');
     Elements.connectionText = document.getElementById('connectionText');
     
     // Input elements
     Elements.promptInput = document.getElementById('promptInput');
     Elements.charCount = document.getElementById('charCount');
     Elements.generateBtn = document.getElementById('generateBtn');
-    Elements.exampleButtons = document.querySelectorAll('.example-btn');
+    Elements.exampleButtons = document.querySelectorAll('.example-card');
     
     // Output elements
-    Elements.placeholder = document.getElementById('placeholder');
-    Elements.loading = document.getElementById('loading');
-    Elements.testCases = document.getElementById('testCases');
+    Elements.placeholder = document.getElementById('placeholderState');
+    Elements.loading = document.getElementById('loadingState');
+    Elements.testCases = document.getElementById('resultsState');
     Elements.testCasesContent = document.getElementById('testCasesContent');
     
     // Action buttons
@@ -88,55 +98,85 @@ function initializeElements() {
     Elements.clearBtn = document.getElementById('clearBtn');
     
     // Status elements
-    Elements.statusBar = document.getElementById('statusBar');
+    Elements.statusBar = document.querySelector('.status-footer');
     Elements.statusText = document.getElementById('statusText');
     Elements.toastContainer = document.getElementById('toastContainer');
     
     // Stats elements
     Elements.generationTime = document.getElementById('generationTime');
     Elements.testCaseCount = document.getElementById('testCaseCount');
+    
+    // Debug: Log missing elements
+    const missingElements = [];
+    Object.entries(Elements).forEach(([key, element]) => {
+        if (!element || (element.length === 0)) {
+            missingElements.push(key);
+        }
+    });
+    
+    if (missingElements.length > 0) {
+        console.warn('⚠️ Missing DOM elements:', missingElements);
+    } else {
+        console.log('✅ All DOM elements found');
+    }
 }
 
 function setupEventListeners() {
     // Generate button
-    Elements.generateBtn.addEventListener('click', generateTestCases);
+    if (Elements.generateBtn) {
+        Elements.generateBtn.addEventListener('click', generateTestCases);
+    }
     
     // Example buttons
-    Elements.exampleButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const example = this.getAttribute('data-example');
-            setExample(example);
+    if (Elements.exampleButtons) {
+        Elements.exampleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const example = this.getAttribute('data-example');
+                setExample(example);
+            });
         });
-    });
+    }
     
-    // Input character counter
-    Elements.promptInput.addEventListener('input', updateCharCount);
+    // Input character counter and auto-resize
+    if (Elements.promptInput) {
+        Elements.promptInput.addEventListener('input', updateCharCount);
+        Elements.promptInput.addEventListener('input', autoResizeTextarea);
+        
+        // Keyboard shortcuts
+        Elements.promptInput.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                event.preventDefault();
+                generateTestCases();
+            }
+        });
+    }
     
-    // Keyboard shortcuts
-    Elements.promptInput.addEventListener('keydown', function(event) {
-        if (event.ctrlKey && event.key === 'Enter') {
-            event.preventDefault();
-            generateTestCases();
-        }
-    });
+    // Action buttons
+    if (Elements.copyBtn) {
+        Elements.copyBtn.addEventListener('click', copyTestCases);
+    }
     
-    // Copy button
-    Elements.copyBtn.addEventListener('click', copyTestCases);
+    if (Elements.downloadBtn) {
+        Elements.downloadBtn.addEventListener('click', downloadTestCases);
+    }
     
-    // Download button
-    Elements.downloadBtn.addEventListener('click', downloadTestCases);
-    
-    // Clear button
-    Elements.clearBtn.addEventListener('click', clearOutput);
-    
-    // Auto-resize textarea
-    Elements.promptInput.addEventListener('input', autoResizeTextarea);
+    if (Elements.clearBtn) {
+        Elements.clearBtn.addEventListener('click', clearOutput);
+    }
 }
 
 function initializeUI() {
     updateCharCount();
     showPlaceholder();
     updateStatus('Ready to generate test cases', 'default');
+    
+    // Ensure input is enabled on initialization
+    if (Elements.promptInput) {
+        Elements.promptInput.disabled = false;
+        console.log('✅ Input field enabled');
+    } else {
+        console.warn('⚠️ Input field not found during initialization');
+    }
 }
 
 // ===== CONNECTION MANAGEMENT =====
@@ -176,12 +216,21 @@ async function checkBackendConnection() {
 }
 
 function updateConnectionStatus(status, message) {
-    Elements.connectionIndicator.className = `connection-indicator ${status}`;
-    Elements.connectionText.textContent = message;
+    if (Elements.connectionIndicator) {
+        Elements.connectionIndicator.className = `connection-card ${status}`;
+    }
+    if (Elements.connectionText) {
+        Elements.connectionText.textContent = message;
+    }
 }
 
 // ===== TEST CASE GENERATION =====
 async function generateTestCases() {
+    if (!Elements.promptInput) {
+        showToast('Input element not found', 'error');
+        return;
+    }
+    
     const prompt = Elements.promptInput.value.trim();
     
     if (!prompt) {
@@ -257,23 +306,25 @@ function setGeneratingState(isGenerating) {
     
     // Update button state
     Elements.generateBtn.disabled = isGenerating;
-    const btnIcon = Elements.generateBtn.querySelector('.btn-icon');
-    const btnText = Elements.generateBtn.querySelector('.btn-text');
+    const btnIcon = Elements.generateBtn.querySelector('.button-icon');
+    const btnText = Elements.generateBtn.querySelector('.main-text');
     
     if (isGenerating) {
-        btnIcon.textContent = '⏳';
-        btnText.textContent = 'Generating...';
+        if (btnIcon) btnIcon.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        if (btnText) btnText.textContent = 'Generating...';
         showLoading();
         startLoadingAnimation();
     } else {
-        btnIcon.textContent = '⚡';
-        btnText.textContent = 'Generate Test Cases';
+        if (btnIcon) btnIcon.innerHTML = '<i class="fas fa-magic"></i>';
+        if (btnText) btnText.textContent = 'Generate Test Cases';
         stopLoadingAnimation();
     }
     
     // Disable/enable input elements
-    Elements.promptInput.disabled = isGenerating;
-    Elements.exampleButtons.forEach(btn => btn.disabled = isGenerating);
+    if (Elements.promptInput) Elements.promptInput.disabled = isGenerating;
+    if (Elements.exampleButtons) {
+        Elements.exampleButtons.forEach(btn => btn.disabled = isGenerating);
+    }
 }
 
 // ===== LOADING ANIMATION =====
@@ -308,29 +359,34 @@ function stopLoadingAnimation() {
 // ===== UI STATE MANAGEMENT =====
 function showPlaceholder() {
     hideAllOutputStates();
-    Elements.placeholder.style.display = 'flex';
-    Elements.copyBtn.style.display = 'none';
-    Elements.downloadBtn.style.display = 'none';
-    Elements.clearBtn.style.display = 'none';
+    if (Elements.placeholder) Elements.placeholder.classList.add('active');
+    if (Elements.copyBtn) Elements.copyBtn.style.display = 'none';
+    if (Elements.downloadBtn) Elements.downloadBtn.style.display = 'none';
+    if (Elements.clearBtn) Elements.clearBtn.style.display = 'none';
 }
 
 function showLoading() {
     hideAllOutputStates();
-    Elements.loading.classList.add('show');
+    if (Elements.loading) Elements.loading.classList.add('active');
 }
 
 function hideAllOutputStates() {
-    Elements.placeholder.style.display = 'none';
-    Elements.loading.classList.remove('show');
-    Elements.testCases.classList.remove('show');
+    if (Elements.placeholder) Elements.placeholder.classList.remove('active');
+    if (Elements.loading) Elements.loading.classList.remove('active');
+    if (Elements.testCases) Elements.testCases.classList.remove('active');
 }
 
 function displayTestCases(testCasesText, duration) {
     hideAllOutputStates();
     
-    // Update content
-    Elements.testCasesContent.textContent = testCasesText;
-    Elements.testCases.classList.add('show');
+    // Parse and format test cases professionally
+    const formattedHTML = parseTestCasesForDisplay(testCasesText);
+    if (Elements.testCasesContent) {
+        Elements.testCasesContent.innerHTML = formattedHTML;
+    }
+    if (Elements.testCases) {
+        Elements.testCases.classList.add('active');
+    }
     
     // Update stats
     if (Elements.generationTime) {
@@ -342,46 +398,52 @@ function displayTestCases(testCasesText, duration) {
     }
     
     // Show action buttons
-    Elements.copyBtn.style.display = 'flex';
-    Elements.downloadBtn.style.display = 'flex';
-    Elements.clearBtn.style.display = 'block';
+    if (Elements.copyBtn) Elements.copyBtn.style.display = 'flex';
+    if (Elements.downloadBtn) Elements.downloadBtn.style.display = 'flex';
+    if (Elements.clearBtn) Elements.clearBtn.style.display = 'block';
     
     // Scroll to top of test cases
-    Elements.testCases.scrollTop = 0;
+    if (Elements.testCases) Elements.testCases.scrollTop = 0;
 }
 
 // ===== UTILITY FUNCTIONS =====
 function setExample(text) {
-    Elements.promptInput.value = text;
-    updateCharCount();
-    autoResizeTextarea();
-    
-    // Add visual feedback
-    Elements.promptInput.style.background = '#e8f5e8';
-    setTimeout(() => {
-        Elements.promptInput.style.background = '';
-    }, 500);
+    if (Elements.promptInput) {
+        Elements.promptInput.value = text;
+        updateCharCount();
+        autoResizeTextarea();
+        
+        // Add visual feedback
+        Elements.promptInput.style.background = '#e8f5e8';
+        setTimeout(() => {
+            Elements.promptInput.style.background = '';
+        }, 500);
+    }
     
     showToast('📝 Example loaded - Click Generate to create test cases', 'success');
 }
 
 function updateCharCount() {
-    const count = Elements.promptInput.value.length;
-    Elements.charCount.textContent = count;
-    
-    // Color coding for character count
-    if (count > 500) {
-        Elements.charCount.style.color = '#dc3545';
-    } else if (count > 300) {
-        Elements.charCount.style.color = '#ffc107';
-    } else {
-        Elements.charCount.style.color = '';
+    if (Elements.promptInput && Elements.charCount) {
+        const count = Elements.promptInput.value.length;
+        Elements.charCount.textContent = count;
+        
+        // Color coding for character count
+        if (count > 500) {
+            Elements.charCount.style.color = '#dc3545';
+        } else if (count > 300) {
+            Elements.charCount.style.color = '#ffc107';
+        } else {
+            Elements.charCount.style.color = '';
+        }
     }
 }
 
 function autoResizeTextarea() {
-    Elements.promptInput.style.height = 'auto';
-    Elements.promptInput.style.height = Elements.promptInput.scrollHeight + 'px';
+    if (Elements.promptInput) {
+        Elements.promptInput.style.height = 'auto';
+        Elements.promptInput.style.height = Elements.promptInput.scrollHeight + 'px';
+    }
 }
 
 async function copyTestCases() {
@@ -395,14 +457,16 @@ async function copyTestCases() {
         showToast('📋 Test cases copied to clipboard!', 'success');
         
         // Visual feedback on button
-        const originalText = Elements.copyBtn.textContent;
-        Elements.copyBtn.textContent = 'Copied!';
-        Elements.copyBtn.style.background = '#28a745';
-        
-        setTimeout(() => {
-            Elements.copyBtn.textContent = originalText;
-            Elements.copyBtn.style.background = '';
-        }, 2000);
+        if (Elements.copyBtn) {
+            const originalText = Elements.copyBtn.textContent;
+            Elements.copyBtn.textContent = 'Copied!';
+            Elements.copyBtn.style.background = '#28a745';
+            
+            setTimeout(() => {
+                Elements.copyBtn.textContent = originalText;
+                Elements.copyBtn.style.background = '';
+            }, 2000);
+        }
         
     } catch (err) {
         console.error('Copy failed:', err);
@@ -445,12 +509,21 @@ function clearOutput() {
 }
 
 function updateStatus(message, type = 'default') {
-    Elements.statusText.textContent = message;
-    Elements.statusBar.className = `status-bar ${type}`;
+    if (Elements.statusText) {
+        Elements.statusText.textContent = message;
+    }
+    if (Elements.statusBar) {
+        Elements.statusBar.className = `status-footer ${type}`;
+    }
 }
 
 // ===== TOAST NOTIFICATIONS =====
 function showToast(message, type = 'success') {
+    if (!Elements.toastContainer) {
+        console.log(`Toast: ${message}`);
+        return;
+    }
+    
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.innerHTML = `<div class="toast-message">${message}</div>`;
@@ -506,6 +579,167 @@ window.addEventListener('load', function() {
         showToast('⚠️ Slow loading detected - Consider optimizing', 'warning');
     }
 });
+
+// ===== TEST CASE PARSING =====
+function parseTestCasesForDisplay(testCasesText) {
+    // Split by TEST CASE markers
+    const sections = testCasesText.split(/===\s*TEST CASE\s+(\d+)\s*===/i);
+    let html = '<div class="professional-test-cases">';
+    
+    // Handle content before first test case
+    if (sections[0] && sections[0].trim()) {
+        const introText = sections[0].trim();
+        // Check if it contains category headers
+        if (introText.includes('**') || introText.includes('*')) {
+            html += formatIntroductionSection(introText);
+        }
+    }
+    
+    // Process test cases
+    for (let i = 1; i < sections.length; i += 2) {
+        const testCaseNumber = sections[i];
+        const testCaseContent = sections[i + 1];
+        
+        if (testCaseContent && testCaseContent.trim()) {
+            html += formatTestCase(testCaseNumber, testCaseContent.trim());
+        }
+    }
+    
+    html += '</div>';
+    return html;
+}
+
+function formatIntroductionSection(text) {
+    let html = '';
+    const lines = text.split('\n');
+    let currentSection = '';
+    
+    lines.forEach(line => {
+        line = line.trim();
+        if (line.startsWith('**') && line.endsWith('**')) {
+            // Section header
+            if (currentSection) {
+                html += '</div>';
+            }
+            const sectionTitle = line.replace(/\*\*/g, '').trim();
+            html += `<div class="test-category-section">
+                        <h3 class="category-title">${sectionTitle}</h3>`;
+            currentSection = sectionTitle;
+        } else if (line.startsWith('*') && !line.startsWith('**')) {
+            // Bullet point
+            const bulletText = line.replace(/^\*\s*/, '').trim();
+            html += `<p class="category-description">${bulletText}</p>`;
+        } else if (line && !line.match(/^===.*===/)) {
+            // Regular text
+            html += `<p class="intro-text">${line}</p>`;
+        }
+    });
+    
+    if (currentSection) {
+        html += '</div>';
+    }
+    
+    return html;
+}
+
+function formatTestCase(number, content) {
+    const testCase = parseTestCaseFields(content);
+    
+    let html = `
+        <div class="test-case-item">
+            <div class="test-case-number">TEST CASE ${number}</div>
+            <div class="test-case-content">`;
+    
+    if (testCase.title) {
+        html += `<h4 class="test-title">${testCase.title}</h4>`;
+    }
+    
+    if (testCase.description) {
+        html += `<div class="test-field">
+                    <span class="field-label">Description:</span>
+                    <span class="field-value">${testCase.description}</span>
+                 </div>`;
+    }
+    
+    if (testCase.preconditions) {
+        html += `<div class="test-field">
+                    <span class="field-label">Preconditions:</span>
+                    <span class="field-value">${testCase.preconditions}</span>
+                 </div>`;
+    }
+    
+    if (testCase.testSteps && testCase.testSteps.length > 0) {
+        html += `<div class="test-field">
+                    <span class="field-label">Test Steps:</span>
+                    <ol class="test-steps">`;
+        testCase.testSteps.forEach(step => {
+            html += `<li>${step}</li>`;
+        });
+        html += `   </ol>
+                 </div>`;
+    }
+    
+    if (testCase.expectedResults) {
+        html += `<div class="test-field">
+                    <span class="field-label">Expected Results:</span>
+                    <span class="field-value">${testCase.expectedResults}</span>
+                 </div>`;
+    }
+    
+    const metadata = [];
+    if (testCase.priority) metadata.push(`Priority: ${testCase.priority}`);
+    if (testCase.category) metadata.push(`Category: ${testCase.category}`);
+    
+    if (metadata.length > 0) {
+        html += `<div class="test-metadata">
+                    <span class="metadata-items">${metadata.join(' • ')}</span>
+                 </div>`;
+    }
+    
+    html += `   </div>
+        </div>`;
+    
+    return html;
+}
+
+function parseTestCaseFields(content) {
+    const testCase = {};
+    
+    // Extract title
+    const titleMatch = content.match(/Title:\s*(.+)/i);
+    if (titleMatch) testCase.title = titleMatch[1].trim();
+    
+    // Extract description
+    const descMatch = content.match(/Description:\s*(.+?)(?=\nTitle:|$)/is);
+    if (descMatch) testCase.description = descMatch[1].trim();
+    
+    // Extract preconditions
+    const precondMatch = content.match(/Preconditions:\s*(.+?)(?=\nTest Steps:|$)/is);
+    if (precondMatch) testCase.preconditions = precondMatch[1].trim();
+    
+    // Extract test steps
+    const stepsMatch = content.match(/Test Steps:\s*(.+?)(?=\nExpected Results:|$)/is);
+    if (stepsMatch) {
+        const stepsText = stepsMatch[1].trim();
+        testCase.testSteps = stepsText.split(/\n(?=\d+\.|\d+\)|\d+\s)/)
+            .map(step => step.replace(/^\d+[\.\)]\s*/, '').trim())
+            .filter(step => step.length > 0);
+    }
+    
+    // Extract expected results
+    const resultsMatch = content.match(/Expected Results:\s*(.+?)(?=\nPriority:|$)/is);
+    if (resultsMatch) testCase.expectedResults = resultsMatch[1].trim();
+    
+    // Extract priority
+    const priorityMatch = content.match(/Priority:\s*(.+?)(?=\nCategory:|$)/is);
+    if (priorityMatch) testCase.priority = priorityMatch[1].trim();
+    
+    // Extract category
+    const categoryMatch = content.match(/Category:\s*(.+?)$/is);
+    if (categoryMatch) testCase.category = categoryMatch[1].trim();
+    
+    return testCase;
+}
 
 // ===== DEVELOPMENT HELPERS =====
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
